@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+data:
+  APP_NAME: argocd-laravel-app
+  APP_ENV: production
+  APP_DEBUG: "false"
+  APP_URL: http://localhost:8080
