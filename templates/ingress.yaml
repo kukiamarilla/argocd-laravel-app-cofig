@@ -6,7 +6,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: 146.190.196.197.nip.io
+  - host: {{ .Values.host.domain }}
     http:
       paths:
       - path: /
