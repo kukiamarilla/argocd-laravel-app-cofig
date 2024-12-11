@@ -11,53 +11,37 @@ spec:
     metadata:
       labels:
         app: argocd-laravel-application
-      annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /metrics
-        prometheus.io/port: "80"
     spec:
-      volumes:
-        - name: logs
-          emptyDir: {}
-        - name: views
-          emptyDir: {}
-      securityContext:
-        fsGroup: 82
       initContainers:
-        - name: database-migrations
-          image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app-backend:{{ .Values.env.APP_VERSION }}
-          imagePullPolicy: IfNotPresent
+        - name: build-assets
+          image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app:builder-{{ .Values.image.tag }}
+          workingDir: /app
+          command: ["sh", "-c", "npm install && npm run build"]
+          volumeMounts:
+            - name: frontend-build
+              mountPath: /app/public/build
           envFrom:
             - configMapRef:
                 name: application-config
-            - secretRef:
-                name: application-secret
       containers:
-        - name: nginx
-          imagePullPolicy: IfNotPresent
-          image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app-frontend:{{ .Values.env.APP_VERSION }}
+        - name: laravel-app
+          image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app:{{ .Values.image.tag }}
           resources: {}
             # limits:
             #   cpu: 500m
             #   memory: 50M
           ports:
             - containerPort: 80
-        - name: fpm
-          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: application-config
             - secretRef:
-                name: application-secret
-          securityContext:
-            runAsUser: 82
-            readOnlyRootFilesystem: true
+                name: application-secrets
           volumeMounts:
-            - name: logs
-              mountPath: /var/www/html/storage/logs
-            - name: views
-              mountPath: /var/www/html/storage/framework/views
-          resources: {}
-          image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app-backend:{{ .Values.env.APP_VERSION }}
-          ports:
-            - containerPort: 9000
+            - name: frontend-build
+              mountPath: /var/www/public/build
+              
+      volumes:
+        - name: frontend-build
+          emptyDir: {}
+        
