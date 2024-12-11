@@ -7,7 +7,8 @@ data:
   APP_ENV: production
   APP_DEBUG: "true"
   APP_TIMEZONE: UTC
-  APP_URL: https://146.190.196.197.nip.io/
+  APP_URL: https://{{ .Values.host.domain }}/
+  ASSET_URL: https://{{ .Values.host.domain }}/
   APP_LOCALE: en
   APP_FALLBACK_LOCALE: en
   APP_FAKER_LOCALE: en_US

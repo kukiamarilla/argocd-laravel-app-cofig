@@ -1,2 +1,5 @@
 image:
-  tag: "latest"
+  tag: latest
+
+host:
+  domain: 146.190.196.197.nip.io
