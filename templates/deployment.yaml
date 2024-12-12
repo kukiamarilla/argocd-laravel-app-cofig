@@ -15,6 +15,7 @@ spec:
       initContainers:
         - name: build-assets
           image: registry.digitalocean.com/kukiamarilla-registry/argocd-laravel-app:builder-{{ .Values.image.tag }}
+          imagePullPolicy: Always
           workingDir: /app
           command: ["sh", "-c", "npm install && npm run build"]
           volumeMounts:
