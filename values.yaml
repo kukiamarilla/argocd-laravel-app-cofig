@@ -1,5 +1,5 @@
 image:
-  tag: latest
+  tag: 1.0.10
 
 host:
   domain: 174.138.125.22.nip.io
